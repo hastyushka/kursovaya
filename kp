@@ -1,0 +1,224 @@
+#define _CRT_SECURE_NO_DEPRECATE
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <math.h>
+#include <locale.h>
+#include <string.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+void first_table(int array[10][10], char name[15][15], int size);
+void second_table(int array[10][10], char name[15][15], int size);
+int sum_time(int array[10][10], int i);
+int penalty_time(int array[10][10], int i);
+void showfile(char line[255], int size);
+void writefile(char name[15][15], int array[10][10], int cnt);
+void readfile(int array[10][10], char name[15][15], int size);
+int sort_bubble(int array[10][10], int size, int index);
+
+void main() {
+	setlocale(LC_ALL, "RUS");
+	char line[255];
+	int end = 0;
+	int* cnt = 0;
+
+	char name[15][15];
+	int array[10][10];
+
+	//  1{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  2{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  3{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  4{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  5{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  6{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  7{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  8{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	//  9{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+	// 10{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5}
+
+
+	int x, size;
+	char buffer[20];
+	puts("Введите кол-во участников");
+	scanf("%d", &size);
+	for (int i = 0; i < size; i++) {
+		printf("Фамилия участника %d: ", i + 1);
+		scanf("%15s", &buffer);
+		strcpy(name[i], buffer);
+		for (int j = 0; j < 10; j++) {
+			if (j < 5) {
+				printf("Время гонки %d (в секундах): ", j + 1);
+				scanf("%d", &x);
+				array[i][j] = x;
+			}
+			else {
+				printf("Промахов в гонке %d: ", j % 5 + 1);
+				scanf("%d", &x);
+				array[i][j] = x;
+			}
+			printf("\n");
+		}
+	}
+
+	while (end != 6) {
+		puts("---------------МЕНЮ---------------");
+		puts("---------Выберите команду---------");
+		puts("----------------------------------");
+		puts("1. Вывести данные файла");
+		puts("2. Записать данные в файл");
+		puts("3. Считать данные с файла (В разработке)");
+		puts("4. Вывести изначальную таблицу");
+		puts("5. Вывести конечную таблицу");
+		puts("6. Выход из программы");
+		puts("----------------------------------\n");
+		scanf("%d", &end);
+		switch (end) {
+		case 1:
+			showfile(line, size);
+			break;
+
+		case 2:
+			writefile(name, array, cnt);
+			break;
+
+		case 3:
+			readfile(array, name, size);
+			break;
+
+		case 4:
+			first_table(array, name, size);
+			break;
+
+		case 5:
+			second_table(array, name, size);
+			break;
+
+		case 6:
+			break;
+		}
+	}
+}
+
+int sort_bubble(int array[10][10], int size, int index) {
+	int new_array[100];
+	int tmp;
+
+	int p_time = penalty_time(array, index);
+	int time5 = sum_time(array, index);
+
+	for (int i = 0; i < size; i++) {
+		new_array[i] = sum_time(array, i) + penalty_time(array, i) * 60;
+	}
+
+	for (int i = 0; i < size - 1; i++) {
+		for (int j = 0; j < size - 1 - i; j++) {
+			if (new_array[j] > new_array[j + 1]) {
+				tmp = new_array[j];
+				new_array[j] = new_array[j + 1];
+				new_array[j + 1] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i <= size; i++) {
+		if ((p_time * 60 + time5) == new_array[i]) {
+			return i + 1;
+		}
+	}
+	return -1;
+}
+
+
+void first_table(int array[10][10], char name[15][15], int size) {
+	puts("|-----------------------------------------------------------------------------------------------------------------------------|");
+	printf("| Номер      | Спортсмен            | 1     | промахи | 2     | промахи | 3     | промахи | 4     | промахи | 5     | промахи |\n");
+	printf("| спортсмена | /круг                |       |         |       |         |       |         |       |         |       |         |\n");
+	puts("|-----------------------------------------------------------------------------------------------------------------------------|");
+	for (int i = 0; i < size; i++) {
+		printf("| %d          | %15s      | %.2d:%.2d | %d       | %.2d:%.2d | %d       | %.2d:%.2d | %d       | %.2d:%.2d | %d       | %.2d:%.2d | %d       |\n",
+			i + 1, name[i],
+			array[i][0] / 60, array[i][0] % 60, array[i][5],
+			array[i][1] / 60, array[i][1] % 60, array[i][6],
+			array[i][2] / 60, array[i][2] % 60, array[i][7],
+			array[i][3] / 60, array[i][3] % 60, array[i][8],
+			array[i][4] / 60, array[i][4] % 60, array[i][9]);
+		puts("|-----------------------------------------------------------------------------------------------------------------------------|");
+	}
+}
+
+
+void second_table(int array[10][10], char name[15][15], int size) {
+	printf("|---------------------------------------------------------------------------------------------|\n");
+	printf("| Номер      |   Участник        | Время за 5 | Штрафное время | Общее время | Итоговое место |\n");
+	printf("| участника  |                   | кругов     | (в минутах)    |             |                |\n");
+	printf("|---------------------------------------------------------------------------------------------|\n");
+	for (int i = 0; i < size; i++) {
+		int p_time = penalty_time(array, i);
+		int time5 = sum_time(array, i);
+		printf("| %d          | %15s   | %.2d:%.2d      | %.2d             | %.2d:%.2d       | %d              |\n",
+			i + 1, name[i], time5 / 60, time5 % 60, p_time, time5 / 60 + p_time, time5 % 60, sort_bubble(array, size, i));
+		printf("|---------------------------------------------------------------------------------------------|\n");
+	}
+
+}
+
+
+int sum_time(int array[10][10], int i) {
+	int sum = 0;
+	for (int j = 0; j <= 4; j++) {
+		sum += array[i][j];
+	}
+	return sum;
+}
+
+
+int penalty_time(int array[10][10], int i) {
+	int sum = 0;
+	for (int j = 5; j <= 9; j++) {
+		sum += array[i][j];
+	}
+	return sum;
+}
+
+
+void showfile(char line[255], int size) {
+	FILE* ptr_file = fopen("test.txt", "r");
+
+	for (int i = 0; i < size; i++) {
+		fgets(line, 255, ptr_file);
+		printf("%s", line);
+	}
+	fclose(ptr_file);
+}
+
+
+void writefile(char name[15][15], int array[10][10], int cnt) {
+	FILE* ptr_file = fopen("test.txt", "w");
+
+	int size;
+	puts("Введите кол-во строк");
+	scanf("%d", &size);
+	for (int i = 0; i < size; i++) {
+		fprintf(ptr_file, "%d %s %d %d %d %d %d %d %d %d %d %d\n",
+			cnt + 1, name[i], array[i][0], array[i][5], array[i][1], array[i][6], array[i][2], array[i][7], array[i][3], array[i][8], array[i][4], array[i][9]);
+		cnt++;
+	}
+	fclose(ptr_file);
+}
+
+
+void readfile(int* array[10][10], char name[15][15], int size) {
+	FILE* file = fopen("test.txt", "r");
+	for (int i = 0; i < size; i++) {
+		fscanf("%d%s%d%d%d%d%d%d%d%d%d%d",
+			array[i], name[i], array[i][0], array[i][5], array[i][1], array[i][6], array[i][2], array[i][7], array[i][3], array[i][8], array[i][4], array[i][9]);
+	}
+}
+
+
+
+
+
