@@ -15,8 +15,8 @@ void second_table(int array[11][11], char name[15][15], int size);
 int sum_time(int array[11][11], int i);
 int penalty_time(int array[11][11], int i);
 void showfile(char line[255], int size);
-void writefile(char name[15][15], int array[11][11], int size);
-void readfile(int array[11][11], char name[15][15], char filename, int size);
+int writefile(char name[15][15], int array[11][11], int size);
+int readfile(int array[11][11], char name[15][15], char filename, int size);
 int sort_bubble(int array[11][11], int size, int index);
 void add_person(int array[11][11], char name[15][15], int size);
 int slowest(int array[11][11], int size);
@@ -26,6 +26,7 @@ int min_misses(int array[11][11], int size);
 int search_by_name(int array[11][11], char name[15][15], int size, char scanname[15]);
 void show_person(int array[11][11], char name[15][15], int size, int index);
 void sorted_table(int array[11][11], char name[15][15], int size);
+void search_by_penalty_time(int array[11][11], char name[15][15], int size, int k1, int k2);
 
 
 void main() {
@@ -48,13 +49,13 @@ void main() {
 	//  9{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5, place}
 	// 10{t1, t2, t3, t4, t5, p1, p2, p3, p4, p5, place}
 
-
+	int k1, k2;
 	int x = 0, y, z, w, size;
 	char buffer[20];
 	puts("Введите количество участников");
 	scanf("%d", &size);
 	system("cls");
-	while (end != 10) {
+	while (end != 11) {
 		x = 0;
 		puts("\n---------------МЕНЮ---------------");
 		puts("---------Выберите команду---------");
@@ -68,7 +69,8 @@ void main() {
 		puts("7. Самый быстрый/медленный спортсмен");
 		puts("8. Поиск игрока по критерию");
 		puts("9. Отсортировать по местам");
-		puts("10. Выход из программы");
+		puts("10. Поиск игроков в диапазоне штрафных очков");
+		puts("11. Выход из программы");
 		puts("----------------------------------\n");
 		scanf("%d", &end);
 		switch (end) {
@@ -182,7 +184,7 @@ void main() {
 					puts("Введите количество секунд");
 					scanf("%d", &y);
 					z = search_by_time(array, name, size, w * 60 + y);
-					if (z != 404) {
+					if (y != 404) {
 						show_person(array, name, size, z);
 					}
 					else {
@@ -201,6 +203,13 @@ void main() {
 			sorted_table(array, name, size);
 			break;
 		case 10:
+			puts("Введите начало диапазона k1: ");
+			scanf("%d", &k1);
+			puts("Введите конец диапазона k2 (включительно): ");
+			scanf("%d", &k2);
+			search_by_penalty_time(array, name, size, k1, k2);
+			break;
+		case 11:
 			break;
 		}
 	}
@@ -217,8 +226,6 @@ void show_person(int array[11][11], char name[15][15], int size, int index) {
 		array[index][10], name[index], time5 / 60, time5 % 60, p_time, time5 / 60 + p_time, time5 % 60, sort_bubble(array, size, index));
 	printf("|---------------------------------------------------------------------------------------------|\n");
 }
-
-
 
 void add_person(int array[11][11], char name[15][15], int size) {
 	char buffer[255];
@@ -244,27 +251,33 @@ void add_person(int array[11][11], char name[15][15], int size) {
 	}
 }
 
-
-void writefile(char name[15][15], int array[11][11], int size) {
+int writefile(char name[15][15], int array[11][11], int size) {
 	FILE* ptr_file = fopen("test.txt", "w");
-
+	if (ptr_file == NULL) {
+		puts("Ошибка открытия файла");
+		return 0;
+	}
 	for (int i = 0; i < size; i++) {
 		fprintf(ptr_file, "%d %s %d %d %d %d %d %d %d %d %d %d\n",
 			array[i][10], name[i], array[i][0], array[i][5], array[i][1], array[i][6], array[i][2], array[i][7], array[i][3], array[i][8], array[i][4], array[i][9]);
 	}
 	fclose(ptr_file);
+	return 1;
 }
 
-
-void readfile(int array[11][11], char name[15][15], char filename, int size) {
+int readfile(int array[11][11], char name[15][15], char filename, int size) {
 	FILE* ptr_file = fopen("test.txt", "r");
+	if (ptr_file == NULL) {
+		puts("Ошибка открытия файла");
+		return 0;
+	}
 	for (int i = 0; i < size; i++) {
 		fscanf(ptr_file, "%d %s %d %d %d %d %d %d %d %d %d %d\n",
 			&array[i][10], &name[i], &array[i][0], &array[i][5], &array[i][1], &array[i][6], &array[i][2], &array[i][7], &array[i][3], &array[i][8], &array[i][4], &array[i][9]);
 	}
 	fclose(ptr_file);
+	return 1;
 }
-
 
 void showfile(char line[255], int size) {
 	FILE* ptr_file = fopen("test.txt", "r");
@@ -275,7 +288,6 @@ void showfile(char line[255], int size) {
 	}
 	fclose(ptr_file);
 }
-
 
 void first_table(int array[11][11], char name[15][15], int size) {
 	puts("|-----------------------------------------------------------------------------------------------------------------------------|");
@@ -294,7 +306,6 @@ void first_table(int array[11][11], char name[15][15], int size) {
 	}
 }
 
-
 void second_table(int array[11][11], char name[15][15], int size) {
 	printf("|---------------------------------------------------------------------------------------------|\n");
 	printf("| Номер      |   Участник        | Время за 5 | Штрафное время | Общее время | Итоговое место |\n");
@@ -307,9 +318,7 @@ void second_table(int array[11][11], char name[15][15], int size) {
 			array[i][10], name[i], time5 / 60, time5 % 60, p_time, time5 / 60 + p_time, time5 % 60, sort_bubble(array, size, i));
 		printf("|---------------------------------------------------------------------------------------------|\n");
 	}
-
 }
-
 
 void sorted_table(int array[11][11], char name[15][15], int size) {
 	int count = 1;
@@ -332,9 +341,7 @@ void sorted_table(int array[11][11], char name[15][15], int size) {
 	}
 }
 
-
 int search_by_name(int array[11][11], char name[15][15], int size, char scanname[15]) {
-
 	for (int i = 0; i < size; i++) {
 		if (strcmp(scanname, name[i]) == 0) {
 			return i;
@@ -342,7 +349,6 @@ int search_by_name(int array[11][11], char name[15][15], int size, char scanname
 	}
 	return 404;
 }
-
 
 int search_by_time(int array[11][11], char name[15][15], int size, int time) {
 	int ftime;
@@ -355,7 +361,6 @@ int search_by_time(int array[11][11], char name[15][15], int size, int time) {
 	return 404;
 }
 
-
 int sum_time(int array[11][11], int i) {
 	int sum = 0;
 	for (int j = 0; j <= 4; j++) {
@@ -364,7 +369,6 @@ int sum_time(int array[11][11], int i) {
 	return sum;
 }
 
-
 int penalty_time(int array[11][11], int i) {
 	int sum = 0;
 	for (int j = 5; j <= 9; j++) {
@@ -372,7 +376,6 @@ int penalty_time(int array[11][11], int i) {
 	}
 	return sum;
 }
-
 
 int sort_bubble(int array[11][11], int size, int index) {
 	int new_array[100];
@@ -403,7 +406,6 @@ int sort_bubble(int array[11][11], int size, int index) {
 	return -1;
 }
 
-
 int slowest(int array[11][11], int size) {
 	int arr[10];
 	int max = 0, mi;
@@ -416,7 +418,6 @@ int slowest(int array[11][11], int size) {
 	}
 	return mi;
 }
-
 
 int fastest(int array[11][11], int size) {
 	int arr[10];
@@ -431,7 +432,6 @@ int fastest(int array[11][11], int size) {
 	return mi;
 }
 
-
 int max_misses(int array[11][11], int size) {
 	int arr[10];
 	int max = 0, mi;
@@ -444,7 +444,6 @@ int max_misses(int array[11][11], int size) {
 	}
 	return mi;
 }
-
 
 int min_misses(int array[11][11], int size) {
 	int arr[10];
@@ -459,3 +458,29 @@ int min_misses(int array[11][11], int size) {
 	return mi;
 }
 
+void search_by_penalty_time(int array[11][11], char name[15][15], int size, int k1, int k2) {
+	int cnt = 0;
+	for (int i = 0; i < size; i++) {
+		if ((penalty_time(array, i) >= k1) && (penalty_time(array, i) <= k2)) {
+			cnt++;
+			break;
+		}
+	}
+	if (cnt > 0) {
+		printf("|---------------------------------------------------------------------------------------------|\n");
+		printf("| Номер      |   Участник        | Время за 5 | Штрафное время | Общее время | Итоговое место |\n");
+		printf("| участника  |                   | кругов     | (в минутах)    |             |                |\n");
+		printf("|---------------------------------------------------------------------------------------------|\n");
+		for (int i = 0; i < size; i++) {
+			if ((penalty_time(array, i) >= k1) && (penalty_time(array, i) <= k2)) {
+				int p_time = penalty_time(array, i);
+				int time5 = sum_time(array, i); {
+					printf("| %d          | %15s   | %.2d:%.2d      | %.2d             | %.2d:%.2d       | %d              |\n",
+						array[i][10], name[i], time5 / 60, time5 % 60, p_time, time5 / 60 + p_time, time5 % 60, sort_bubble(array, size, i));
+					printf("|---------------------------------------------------------------------------------------------|\n");
+				}
+			}
+		}
+	}
+	else puts("Участников со штрафным временем в данном диапазоне не сущесвтует");
+}
