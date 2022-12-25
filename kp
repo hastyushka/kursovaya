@@ -265,7 +265,7 @@ int writefile(char name[15][15], int array[11][11], int size) {
 	return 1;
 }
 
-int readfile(int array[11][11], char name[15][15], char filename, int size) {
+int readfile(int array[11][11], char name[15][15], int size) {
 	FILE* ptr_file = fopen("test.txt", "r");
 	if (ptr_file == NULL) {
 		puts("Ошибка открытия файла");
