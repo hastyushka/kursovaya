@@ -2,13 +2,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
-#include <math.h>
 #include <locale.h>
 #include <string.h>
-#include <conio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <stdbool.h>
 
 void first_table(int array[11][11], char name[15][15], int size);
 void second_table(int array[11][11], char name[15][15], int size);
@@ -113,7 +109,7 @@ void main() {
 				puts("1. Самый быстрый спортсмен");
 				puts("2. Самый медленный спортсмен");
 				puts("3. Спортсмен, имеющий наибольшее число промахов");
-				puts("4. Спортсмен, имещий наименьшее число промахов");
+				puts("4. Спортсмен, имеющий наименьшее число промахов");
 				puts("5. Назад в главное меню");
 				puts("----------------------------------\n");
 				scanf("%d", &x);
@@ -184,7 +180,7 @@ void main() {
 					puts("Введите количество секунд");
 					scanf("%d", &y);
 					z = search_by_time(array, name, size, w * 60 + y);
-					if (y != 404) {
+					if (z != 404) {
 						show_person(array, name, size, z);
 					}
 					else {
@@ -237,12 +233,12 @@ void add_person(int array[11][11], char name[15][15], int size) {
 		strcpy(name[i], buffer);
 		for (int j = 0; j < 10; j++) {
 			if (j < 5) {
-				printf("Время гонки %d (в секундах): ", j + 1);
+				printf("Время за %d круг(в секундах): ", j + 1);
 				scanf("%d", &x);
 				array[i][j] = x;
 			}
 			else {
-				printf("Промахов в гонке %d: ", j % 5 + 1);
+				printf("Промахов за %d круг: ", j % 5 + 1);
 				scanf("%d", &x);
 				array[i][j] = x;
 			}
@@ -265,7 +261,7 @@ int writefile(char name[15][15], int array[11][11], int size) {
 	return 1;
 }
 
-int readfile(int array[11][11], char name[15][15], int size) {
+int readfile(int array[11][11], char name[15][15], char filename, int size) {
 	FILE* ptr_file = fopen("test.txt", "r");
 	if (ptr_file == NULL) {
 		puts("Ошибка открытия файла");
@@ -482,5 +478,5 @@ void search_by_penalty_time(int array[11][11], char name[15][15], int size, int 
 			}
 		}
 	}
-	else puts("Участников со штрафным временем в данном диапазоне не сущесвтует");
+	else puts("Участников со штрафным временем в данном диапазоне не существует");
 }
