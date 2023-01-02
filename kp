@@ -1,11 +1,14 @@
+//Директивы препроцессора
 #define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_WARNINGS
 
+//Объявление библиотек
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
 #include <stdlib.h>
 
+//Объявление всех функций
 void first_table(int array[11][11], char name[15][15], int size);
 void second_table(int array[11][11], char name[15][15], int size);
 int sum_time(int array[11][11], int i);
@@ -25,7 +28,7 @@ void sorted_table(int array[11][11], char name[15][15], int size);
 void search_by_penalty_time(int array[11][11], char name[15][15], int size, int k1, int k2);
 int search_by_time(int array[11][11], char name[15][15], int size, int time);
 
-
+//Главная функция
 void main() {
 	setlocale(LC_ALL, "RUS");
 	char line[255];
@@ -212,6 +215,7 @@ void main() {
 	}
 }
 
+//Функция вывода данных об участнике
 void show_person(int array[11][11], char name[15][15], int size, int index) {
 	printf("|---------------------------------------------------------------------------------------------|\n");
 	printf("| Номер      |   Участник        | Время за 5 | Штрафное время | Общее время | Итоговое место |\n");
@@ -224,6 +228,7 @@ void show_person(int array[11][11], char name[15][15], int size, int index) {
 	printf("|---------------------------------------------------------------------------------------------|\n");
 }
 
+//Функция добавления участника и данных о нем в файл
 void add_person(int array[11][11], char name[15][15], int size) {
 	char buffer[255];
 	int x;
@@ -248,6 +253,7 @@ void add_person(int array[11][11], char name[15][15], int size) {
 	}
 }
 
+//Функция перезаписи данных в исходном файле
 int writefile(char name[15][15], int array[11][11], int size) {
 	FILE* ptr_file = fopen("test.txt", "w");
 	if (ptr_file == NULL) {
@@ -262,6 +268,7 @@ int writefile(char name[15][15], int array[11][11], int size) {
 	return 1;
 }
 
+//Функция считывания данных из файла
 int readfile(int array[11][11], char name[15][15], char filename, int size) {
 	FILE* ptr_file = fopen("test.txt", "r");
 	if (ptr_file == NULL) {
@@ -276,6 +283,7 @@ int readfile(int array[11][11], char name[15][15], char filename, int size) {
 	return 1;
 }
 
+//Функция вывода всех данных из исходного файла
 void showfile(char line[255], int size) {
 	FILE* ptr_file = fopen("test.txt", "r");
 
@@ -286,6 +294,7 @@ void showfile(char line[255], int size) {
 	fclose(ptr_file);
 }
 
+//Функция вывода исходной таблицы
 void first_table(int array[11][11], char name[15][15], int size) {
 	puts("|-----------------------------------------------------------------------------------------------------------------------------|");
 	printf("| Номер      | Спортсмен            | 1     | промахи | 2     | промахи | 3     | промахи | 4     | промахи | 5     | промахи |\n");
@@ -303,6 +312,7 @@ void first_table(int array[11][11], char name[15][15], int size) {
 	}
 }
 
+//Функция вывода итоговой таблицы
 void second_table(int array[11][11], char name[15][15], int size) {
 	printf("|---------------------------------------------------------------------------------------------|\n");
 	printf("| Номер      |   Участник        | Время за 5 | Штрафное время | Общее время | Итоговое место |\n");
@@ -317,6 +327,7 @@ void second_table(int array[11][11], char name[15][15], int size) {
 	}
 }
 
+//Функция сортировки итоговой таблицы по итоговым местам
 void sorted_table(int array[11][11], char name[15][15], int size) {
 	int count = 1;
 	printf("|---------------------------------------------------------------------------------------------|\n");
@@ -338,6 +349,7 @@ void sorted_table(int array[11][11], char name[15][15], int size) {
 	}
 }
 
+//Функция поиска участника по фамилии или общему времени
 int search_by_name(int array[11][11], char name[15][15], int size, char scanname[15]) {
 	for (int i = 0; i < size; i++) {
 		if (strcmp(scanname, name[i]) == 0) {
@@ -347,6 +359,7 @@ int search_by_name(int array[11][11], char name[15][15], int size, char scanname
 	return 404;
 }
 
+//Функция, сравнивающая одинаковы ли время в исходном файле и время, введенное пользователем с клавиатуры
 int search_by_time(int array[11][11], char name[15][15], int size, int time) {
 	int ftime;
 	for (int i = 0; i < size; i++) {
@@ -358,6 +371,7 @@ int search_by_time(int array[11][11], char name[15][15], int size, int time) {
 	return 404;
 }
 
+//Функция, суммирующая общее и штрафное время
 int sum_time(int array[11][11], int i) {
 	int sum = 0;
 	for (int j = 0; j <= 4; j++) {
@@ -366,6 +380,7 @@ int sum_time(int array[11][11], int i) {
 	return sum;
 }
 
+//Функция, суммирующая штрафное время за 5 кругов
 int penalty_time(int array[11][11], int i) {
 	int sum = 0;
 	for (int j = 5; j <= 9; j++) {
@@ -374,6 +389,7 @@ int penalty_time(int array[11][11], int i) {
 	return sum;
 }
 
+//Функция сортировки общего времени
 int sort_bubble(int array[11][11], int size, int index) {
 	int new_array[100];
 	int tmp;
@@ -403,6 +419,7 @@ int sort_bubble(int array[11][11], int size, int index) {
 	return -1;
 }
 
+//Функция, ищущая самого медленного спортсмена
 int slowest(int array[11][11], int size) {
 	int arr[10];
 	int max = 0, mi;
@@ -416,6 +433,7 @@ int slowest(int array[11][11], int size) {
 	return mi;
 }
 
+//Функция, ищущая самого быстрого спортсмена
 int fastest(int array[11][11], int size) {
 	int arr[10];
 	int min = 1000, mi;
@@ -429,6 +447,7 @@ int fastest(int array[11][11], int size) {
 	return mi;
 }
 
+//Функция, ищущая спортсмена с наибольшим количеством промахов
 int max_misses(int array[11][11], int size) {
 	int arr[10];
 	int max = 0, mi;
@@ -442,6 +461,7 @@ int max_misses(int array[11][11], int size) {
 	return mi;
 }
 
+//Функция, ищущая спортсмена с наименьшим количеством промахов
 int min_misses(int array[11][11], int size) {
 	int arr[10];
 	int min = 1000, mi;
@@ -455,6 +475,7 @@ int min_misses(int array[11][11], int size) {
 	return mi;
 }
 
+//Функция поиска игроков с кол-вом штрафных очков, которое попадает в указанный пользователем диапазон
 void search_by_penalty_time(int array[11][11], char name[15][15], int size, int k1, int k2) {
 	int cnt = 0;
 	for (int i = 0; i < size; i++) {
