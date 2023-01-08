@@ -371,7 +371,7 @@ int search_by_time(int array[11][11], char name[15][15], int size, int time) {
 	return 404;
 }
 
-//Функция, суммирующая общее и штрафное время
+//Функция, суммирующая общее время
 int sum_time(int array[11][11], int i) {
 	int sum = 0;
 	for (int j = 0; j <= 4; j++) {
